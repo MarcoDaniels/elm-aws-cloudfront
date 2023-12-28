@@ -1,8 +1,32 @@
-module CloudFront exposing (Model, Msg(..), cloudFront, platformWorker)
+module CloudFront exposing
+    ( cloudFront
+    , Model, Msg(..)
+    , platformWorker
+    )
 
-{-| TODO
+{-| The `cloudFront` function requires an **input** and **output** ports as a tuple parameter
+in order to communicate with the JavaScript handler code.
 
-@docs Model, Msg, cloudFront, platformWorker
+    port module MyModule exposing (...)
+
+    import Json.Decode as Decode
+    import Json.Encode as Encode
+    import CloudFront exposing (cloudFront)
+
+    port inputEvent : (Decode.Value -> msg) -> Sub msg
+
+    port outputEvent : Encode.Value -> Cmd msg
+
+The ports must have the same type as the example.
+
+@docs cloudFront
+
+
+## Core Model and Msg
+
+@docs Model, Msg
+
+@docs platformWorker
 
 -}
 
@@ -12,19 +36,30 @@ import Json.Decode as Decode exposing (Error)
 import Json.Encode as Encode
 
 
-{-| TODO
+{-| Model contains the decoded [InputEvent](./CloudFront-Lambda#InputEvent) and the
+optional flags passed on init.
 -}
 type alias Model a =
     { event : Maybe InputEvent, flags : a }
 
 
-{-| TODO
+{-| Msg is used to contain the result/error of decoding the input event from ports.
 -}
 type Msg
     = Input (Result Error InputEvent)
 
 
-{-| TODO
+{-| Create a CloudFront origin handler to handle the request/response
+of your CloudFront distribution:
+
+    import CloudFront.Lambda exposing (originRequest, toRequest)
+
+    ( inputPort, outputPort )
+        |> (originRequest
+                (\{ request } _ -> request |> toRequest)
+                |> cloudFront
+           )
+
 -}
 cloudFront :
     (flags -> Maybe InputOrigin -> OutputEvent)
@@ -35,8 +70,7 @@ cloudFront originHandler ports =
         |> Platform.worker
 
 
-{-| TODO
--}
+{-| -}
 platformWorker :
     (flags -> Maybe InputOrigin -> OutputEvent)
     -> ( (Decode.Value -> Msg) -> Sub Msg, Encode.Value -> Cmd Msg )

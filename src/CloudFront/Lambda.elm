@@ -1,17 +1,32 @@
-module CloudFront.Lambda exposing (Config, CustomOrigin, CustomOriginData, InputEvent, InputOrigin(..), Origin(..), OriginRequest, OriginResponse, OutputEvent(..), Record, Request, Response, S3Origin, S3OriginData, originRequest, originResponse, toRequest, toResponse)
+module CloudFront.Lambda exposing
+    ( originRequest, originResponse
+    , toRequest, toResponse
+    , Config, CustomOrigin, CustomOriginData, InputEvent, InputOrigin(..), Origin(..), OriginRequest, OriginResponse, OutputEvent(..), Record, Request, Response, S3Origin, S3OriginData
+    )
 
 {-| TODO:
 
-@docs Config, CustomOrigin, CustomOriginData, InputEvent, InputOrigin, Origin, OriginRequest, OriginResponse, OutputEvent, Record, Request, Response, S3Origin, S3OriginData, originRequest, originResponse, toRequest, toResponse
+<https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html>
+
+
+## Handlers
+
+@docs originRequest, originResponse
+
+
+## Output
+
+@docs toRequest, toResponse
+
+
+## Types
+
+@docs Config, CustomOrigin, CustomOriginData, InputEvent, InputOrigin, Origin, OriginRequest, OriginResponse, OutputEvent, Record, Request, Response, S3Origin, S3OriginData
 
 -}
 
 import CloudFront.Header exposing (Headers)
 import Dict
-
-
-
-{---- Types ----}
 
 
 {-| TODO

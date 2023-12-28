@@ -1,11 +1,11 @@
 port module CloudFrontOrigin exposing (suite)
 
-import CloudFront exposing (Msg(..), platformWorker)
+import CloudFront exposing (Model, Msg(..), platformWorker)
 import CloudFront.Core exposing (decodeInputEvent, encodeInputEvent)
 import CloudFront.Lambda exposing (InputEvent, InputOrigin(..), Origin(..), OutputEvent, originRequest, originResponse, toRequest, toResponse)
 import Dict
 import Expect
-import Json.Decode as Decode
+import Json.Decode as Decode exposing (Error)
 import Json.Encode as Encode
 import ProgramTest
 import SimulatedEffect.Ports
@@ -113,7 +113,7 @@ port inputEvent : (Decode.Value -> msg) -> Sub msg
 port outputEvent : Encode.Value -> Cmd msg
 
 
-setupTestFor : (() -> Maybe InputOrigin -> OutputEvent) -> InputEvent -> ProgramTest.ProgramTest { event : Maybe InputEvent, flags : () } Msg (Cmd Msg)
+setupTestFor : (() -> Maybe InputOrigin -> OutputEvent) -> InputEvent -> ProgramTest.ProgramTest (Model ()) Msg (Cmd Msg)
 setupTestFor updateFunction inputExample =
     let
         platform =
