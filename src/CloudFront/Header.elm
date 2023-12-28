@@ -1,16 +1,28 @@
 module CloudFront.Header exposing (Header, Headers, withHeader, withHeaders)
 
+{-| TODO:
+
+@docs Header, Headers, withHeader, withHeaders
+
+-}
+
 import Dict
 
 
+{-| TODO
+-}
 type alias Header =
     { key : String, value : String }
 
 
+{-| TODO
+-}
 type alias Headers =
     Dict.Dict String (List Header)
 
 
+{-| TODO
+-}
 withHeader :
     Header
     -> { event | headers : Headers }
@@ -19,6 +31,8 @@ withHeader header event =
     { event | headers = Dict.union (headerBuilder header Dict.empty) event.headers }
 
 
+{-| TODO
+-}
 withHeaders :
     List Header
     -> { event | headers : Headers }

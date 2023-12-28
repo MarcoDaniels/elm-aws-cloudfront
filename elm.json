@@ -1,38 +1,37 @@
 {
-    "type": "application",
-    "source-directories": [
-        "src"
+    "type": "package",
+    "name": "marcodaniels/elm-aws-cloudfront",
+    "summary": "AWS CloudFront lambdas with Elm",
+    "license": "BSD-3-Clause",
+    "version": "1.0.0",
+    "exposed-modules": [
+        "CloudFront",
+        "CloudFront.Lambda",
+        "CloudFront.Header"
     ],
-    "elm-version": "0.19.1",
+    "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {
-        "direct": {
-            "NoRedInk/elm-json-decode-pipeline": "1.0.1",
-            "elm/core": "1.0.5",
-            "elm/json": "1.1.3"
-        },
-        "indirect": {}
+        "NoRedInk/elm-json-decode-pipeline": "1.0.1 <= v < 2.0.0",
+        "elm/core": "1.0.5 <= v < 2.0.0",
+        "elm/json": "1.1.3 <= v < 2.0.0"
     },
     "test-dependencies": {
-        "direct": {
-            "elm-explorations/test": "2.1.1",
-            "avh4/elm-program-test": "4.0.0"
-        },
-        "indirect": {
-            "avh4/elm-fifo": "1.0.4",
-            "elm/browser": "1.0.2",
-            "elm/bytes": "1.0.8",
-            "elm/file": "1.0.5",
-            "elm/html": "1.0.0",
-            "elm/http": "2.0.0",
-            "elm/parser": "1.1.0",
-            "elm/random": "1.0.0",
-            "elm/time": "1.0.0",
-            "elm/url": "1.0.0",
-            "elm/virtual-dom": "1.0.3",
-            "elm-community/list-extra": "8.7.0",
-            "hecrj/html-parser": "2.4.0",
-            "mgold/elm-nonempty-list": "4.2.0",
-            "rtfeldman/elm-hex": "1.0.0"
-        }
+        "elm-explorations/test": "2.1.1 <= v < 3.0.0",
+        "avh4/elm-program-test": "4.0.0 <= v < 5.0.0",
+        "avh4/elm-fifo": "1.0.4 <= v < 2.0.0",
+        "elm/browser": "1.0.2 <= v < 2.0.0",
+        "elm/bytes": "1.0.8 <= v < 2.0.0",
+        "elm/file": "1.0.5 <= v < 2.0.0",
+        "elm/html": "1.0.0 <= v < 2.0.0",
+        "elm/http": "2.0.0 <= v < 3.0.0",
+        "elm/parser": "1.1.0 <= v < 2.0.0",
+        "elm/random": "1.0.0 <= v < 2.0.0",
+        "elm/time": "1.0.0 <= v < 2.0.0",
+        "elm/url": "1.0.0 <= v < 2.0.0",
+        "elm/virtual-dom": "1.0.3 <= v < 2.0.0",
+        "elm-community/list-extra": "8.7.0 <= v < 9.0.0",
+        "hecrj/html-parser": "2.4.0 <= v < 3.0.0",
+        "mgold/elm-nonempty-list": "4.2.0 <= v < 5.0.0",
+        "rtfeldman/elm-hex": "1.0.0 <= v < 2.0.0"
     }
 }

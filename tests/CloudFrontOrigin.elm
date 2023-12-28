@@ -1,11 +1,12 @@
-module CloudFrontOrigin exposing (suite)
+port module CloudFrontOrigin exposing (suite)
 
-import CloudFront exposing (Msg(..), platformWorker, toRequest, toResponse)
+import CloudFront exposing (Msg(..), platformWorker)
 import CloudFront.Core exposing (decodeInputEvent, encodeInputEvent)
-import CloudFront.Lambda exposing (InputEvent, InputOrigin(..), Origin(..), OutputEvent, originRequest, originResponse)
+import CloudFront.Lambda exposing (InputEvent, InputOrigin(..), Origin(..), OutputEvent, originRequest, originResponse, toRequest, toResponse)
 import Dict
 import Expect
 import Json.Decode as Decode
+import Json.Encode as Encode
 import ProgramTest
 import SimulatedEffect.Ports
 import Test exposing (Test, describe, test)
@@ -106,10 +107,20 @@ originResponseExample =
     }
 
 
+port inputEvent : (Decode.Value -> msg) -> Sub msg
+
+
+port outputEvent : Encode.Value -> Cmd msg
+
+
 setupTestFor : (() -> Maybe InputOrigin -> OutputEvent) -> InputEvent -> ProgramTest.ProgramTest { event : Maybe InputEvent, flags : () } Msg (Cmd Msg)
 setupTestFor updateFunction inputExample =
+    let
+        platform =
+            ( inputEvent, outputEvent ) |> (updateFunction |> platformWorker)
+    in
     ProgramTest.createWorker
-        { init = (platformWorker updateFunction).init, update = (platformWorker updateFunction).update }
+        { init = platform.init, update = platform.update }
         |> ProgramTest.withSimulatedSubscriptions
             (\_ -> SimulatedEffect.Ports.subscribe "inputEvent" (Decode.oneOf [ decodeInputEvent |> Decode.map Ok ]) Input)
         |> ProgramTest.start ()

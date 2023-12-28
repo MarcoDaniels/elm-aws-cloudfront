@@ -1,21 +1,10 @@
-module CloudFront.Lambda exposing
-    ( Config
-    , CustomOrigin
-    , CustomOriginData
-    , InputEvent
-    , InputOrigin(..)
-    , Origin(..)
-    , OriginRequest
-    , OriginResponse
-    , OutputEvent(..)
-    , Record
-    , Request
-    , Response
-    , S3Origin
-    , S3OriginData
-    , originRequest
-    , originResponse
-    )
+module CloudFront.Lambda exposing (Config, CustomOrigin, CustomOriginData, InputEvent, InputOrigin(..), Origin(..), OriginRequest, OriginResponse, OutputEvent(..), Record, Request, Response, S3Origin, S3OriginData, originRequest, originResponse, toRequest, toResponse)
+
+{-| TODO:
+
+@docs Config, CustomOrigin, CustomOriginData, InputEvent, InputOrigin, Origin, OriginRequest, OriginResponse, OutputEvent, Record, Request, Response, S3Origin, S3OriginData, originRequest, originResponse, toRequest, toResponse
+
+-}
 
 import CloudFront.Header exposing (Headers)
 import Dict
@@ -25,6 +14,8 @@ import Dict
 {---- Types ----}
 
 
+{-| TODO
+-}
 type alias Config =
     { distributionDomainName : String
     , distributionId : String
@@ -33,6 +24,8 @@ type alias Config =
     }
 
 
+{-| TODO
+-}
 type alias CustomOriginData =
     { customHeaders : Headers
     , domainName : String
@@ -45,10 +38,14 @@ type alias CustomOriginData =
     }
 
 
+{-| TODO
+-}
 type alias CustomOrigin =
     { custom : CustomOriginData }
 
 
+{-| TODO
+-}
 type alias S3OriginData =
     { authMethod : String
     , customHeaders : Headers
@@ -58,16 +55,22 @@ type alias S3OriginData =
     }
 
 
+{-| TODO
+-}
 type alias S3Origin =
     { s3 : S3OriginData }
 
 
+{-| TODO
+-}
 type Origin
     = OriginS3 S3Origin
     | OriginCustom CustomOrigin
     | OriginUnknown
 
 
+{-| TODO
+-}
 type alias Request =
     { clientIp : String
     , headers : Headers
@@ -78,6 +81,8 @@ type alias Request =
     }
 
 
+{-| TODO
+-}
 type alias Response =
     { status : String
     , statusDescription : String
@@ -85,32 +90,46 @@ type alias Response =
     }
 
 
+{-| TODO
+-}
 type alias OriginRequest =
     { config : Config, request : Request }
 
 
+{-| TODO
+-}
 type alias OriginResponse =
     { config : Config, request : Request, response : Response }
 
 
+{-| TODO
+-}
 type InputOrigin
     = InputResponse OriginResponse
     | InputRequest OriginRequest
 
 
+{-| TODO
+-}
 type alias Record =
     { cf : InputOrigin }
 
 
+{-| TODO
+-}
 type alias InputEvent =
     { records : List Record }
 
 
+{-| TODO
+-}
 type OutputEvent
     = OutputResponse Response
     | OutputRequest Request
 
 
+{-| TODO
+-}
 originRequest :
     (OriginRequest -> flags -> OutputEvent)
     -> flags
@@ -130,6 +149,8 @@ originRequest origin flags maybeCloudFront =
             origin defaultOriginRequest flags
 
 
+{-| TODO
+-}
 originResponse :
     (OriginResponse -> flags -> OutputEvent)
     -> flags
@@ -147,6 +168,24 @@ originResponse origin flags maybeCloudFront =
 
         _ ->
             origin defaultOriginResponse flags
+
+
+{-| TODO
+-}
+toRequest : Request -> OutputEvent
+toRequest request =
+    OutputRequest request
+
+
+{-| TODO
+-}
+toResponse : Response -> OutputEvent
+toResponse response =
+    OutputResponse response
+
+
+
+{---- Defaults ----}
 
 
 defaultConfig : Config

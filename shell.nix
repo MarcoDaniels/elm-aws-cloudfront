@@ -11,5 +11,6 @@ in pkgs.mkShell rec {
     elm-test
     elm-format
     elm-coverage
+    elm-doc-preview
   ];
 }

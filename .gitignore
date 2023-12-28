@@ -1,3 +1,4 @@
 .idea
 .coverage
+.ignore
 elm-stuff

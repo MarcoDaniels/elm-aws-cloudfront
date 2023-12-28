@@ -1,49 +1,51 @@
-port module CloudFront exposing (Model, Msg(..), cloudFront, platformWorker, toRequest, toResponse)
+module CloudFront exposing (Model, Msg(..), cloudFront, platformWorker)
+
+{-| TODO
+
+@docs Model, Msg, cloudFront, platformWorker
+
+-}
 
 import CloudFront.Core exposing (decodeInputEvent, encodeOutputEvent)
-import CloudFront.Lambda exposing (InputEvent, InputOrigin, OutputEvent(..), Request, Response)
+import CloudFront.Lambda exposing (InputEvent, InputOrigin, OutputEvent)
 import Json.Decode as Decode exposing (Error)
 import Json.Encode as Encode
 
 
-port inputEvent : (Decode.Value -> msg) -> Sub msg
-
-
-port outputEvent : Encode.Value -> Cmd msg
-
-
+{-| TODO
+-}
 type alias Model a =
     { event : Maybe InputEvent, flags : a }
 
 
+{-| TODO
+-}
 type Msg
     = Input (Result Error InputEvent)
 
 
-toRequest : Request -> OutputEvent
-toRequest request =
-    OutputRequest request
-
-
-toResponse : Response -> OutputEvent
-toResponse response =
-    OutputResponse response
-
-
-cloudFront : (flags -> Maybe InputOrigin -> OutputEvent) -> Program flags (Model flags) Msg
-cloudFront originHandler =
-    platformWorker originHandler
+{-| TODO
+-}
+cloudFront :
+    (flags -> Maybe InputOrigin -> OutputEvent)
+    -> ( (Decode.Value -> Msg) -> Sub Msg, Encode.Value -> Cmd Msg )
+    -> Program flags (Model flags) Msg
+cloudFront originHandler ports =
+    platformWorker originHandler ports
         |> Platform.worker
 
 
+{-| TODO
+-}
 platformWorker :
     (flags -> Maybe InputOrigin -> OutputEvent)
+    -> ( (Decode.Value -> Msg) -> Sub Msg, Encode.Value -> Cmd Msg )
     ->
-        { init : flags -> ( { event : Maybe InputEvent, flags : flags }, Cmd Msg )
-        , update : Msg -> { event : Maybe InputEvent, flags : flags } -> ( { event : Maybe InputEvent, flags : flags }, Cmd Msg )
-        , subscriptions : { event : Maybe InputEvent, flags : flags } -> Sub Msg
+        { init : flags -> ( Model flags, Cmd Msg )
+        , update : Msg -> Model flags -> ( Model flags, Cmd Msg )
+        , subscriptions : Model flags -> Sub Msg
         }
-platformWorker originHandler =
+platformWorker originHandler ( inputEvent, outputEvent ) =
     { init = \flags -> ( { event = Nothing, flags = flags }, Cmd.none )
     , update =
         \msg model ->
