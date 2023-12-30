@@ -1,6 +1,9 @@
 module CloudFront.Header exposing (Header, Headers, withHeader, withHeaders)
 
-{-| TODO:
+{-| Handle AWS CloudFront request and response headers.
+
+For more documentation see [working with policies in AWS CloudFront developer guide
+](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/working-with-policies.html).
 
 @docs Header, Headers, withHeader, withHeaders
 
@@ -9,19 +12,42 @@ module CloudFront.Header exposing (Header, Headers, withHeader, withHeaders)
 import Dict
 
 
-{-| TODO
+{-| A single header is defined as key value type
+
+    header : Header
+    header =
+        { key = "user-agent", value = "Amazon CloudFront" }
+
 -}
 type alias Header =
     { key : String, value : String }
 
 
-{-| TODO
+{-| A group of headers are defined as a dictionary of key -> key value type
+
+    header : Headers
+    header =
+        Dict.singleton "user-agent" [ { key = "user-agent", value = "Amazon CloudFront" } ]
+
+    headers : Headers
+    headers =
+        Dict.fromList
+            [ ( "user-agent", [ { key = "user-agent", value = "Amazon CloudFront" } ] )
+            , ( "host", [ { key = "host", value = "example.org" } ] )
+            ]
+
 -}
 type alias Headers =
     Dict.Dict String (List Header)
 
 
-{-| TODO
+{-| Append a new header to the existing headers dictionary
+
+    headers : { headers : Headers } -> { headers : Headers }
+    headers =
+        withHeader
+            { key = "cache-control", value = "public, max-age=10000" }
+
 -}
 withHeader :
     Header
@@ -31,7 +57,15 @@ withHeader header event =
     { event | headers = Dict.union (headerBuilder header Dict.empty) event.headers }
 
 
-{-| TODO
+{-| Append multiple headers to the exising headers dictionary
+
+    headers : { headers : Headers } -> { headers : Headers }
+    headers =
+        withHeaders
+            [ { key = "x-frame-options", value = "DENY" }
+            , { key = "content-security-policy", value = "default-src 'self';" }
+            ]
+
 -}
 withHeaders :
     List Header
