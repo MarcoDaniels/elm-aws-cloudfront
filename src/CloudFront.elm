@@ -7,11 +7,11 @@ module CloudFront exposing
 {-| The `cloudFront` function requires an **input** and **output** ports as a tuple parameter
 in order to communicate with the JavaScript handler code.
 
-    port module MyModule exposing (...)
+    port module MyModule exposing (..)
 
+    import CloudFront exposing (cloudFront)
     import Json.Decode as Decode
     import Json.Encode as Encode
-    import CloudFront exposing (cloudFront)
 
     port inputEvent : (Decode.Value -> msg) -> Sub msg
 
