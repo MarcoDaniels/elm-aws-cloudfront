@@ -1,12 +1,15 @@
 module CloudFront.Lambda exposing
     ( originRequest, originResponse
     , toRequest, toResponse
-    , Config, CustomOrigin, CustomOriginData, InputEvent, InputOrigin(..), Origin(..), OriginRequest, OriginResponse, OutputEvent(..), Record, Request, Response, S3Origin, S3OriginData
+    , InputEvent, Record, InputOrigin(..), OriginResponse, OriginRequest
+    , Config, Request, Response
+    , Origin(..), S3Origin, S3OriginData, CustomOrigin, CustomOriginData
+    , OutputEvent(..)
     )
 
-{-| TODO:
+{-| Edge@Lambda handlers for AWS CloudFront request and response events.
 
-<https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html>
+Read more about [Edge@Lambda event structure](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html).
 
 
 ## Handlers
@@ -21,7 +24,12 @@ module CloudFront.Lambda exposing
 
 ## Types
 
-@docs Config, CustomOrigin, CustomOriginData, InputEvent, InputOrigin, Origin, OriginRequest, OriginResponse, OutputEvent, Record, Request, Response, S3Origin, S3OriginData
+Types for the [lambda event structure](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html).
+
+@docs InputEvent, Record, InputOrigin, OriginResponse, OriginRequest
+@docs Config, Request, Response
+@docs Origin, S3Origin, S3OriginData, CustomOrigin, CustomOriginData
+@docs OutputEvent
 
 -}
 
@@ -29,8 +37,7 @@ import CloudFront.Header exposing (Headers)
 import Dict
 
 
-{-| TODO
--}
+{-| -}
 type alias Config =
     { distributionDomainName : String
     , distributionId : String
@@ -39,8 +46,7 @@ type alias Config =
     }
 
 
-{-| TODO
--}
+{-| -}
 type alias CustomOriginData =
     { customHeaders : Headers
     , domainName : String
@@ -53,14 +59,12 @@ type alias CustomOriginData =
     }
 
 
-{-| TODO
--}
+{-| -}
 type alias CustomOrigin =
     { custom : CustomOriginData }
 
 
-{-| TODO
--}
+{-| -}
 type alias S3OriginData =
     { authMethod : String
     , customHeaders : Headers
@@ -70,22 +74,19 @@ type alias S3OriginData =
     }
 
 
-{-| TODO
--}
+{-| -}
 type alias S3Origin =
     { s3 : S3OriginData }
 
 
-{-| TODO
--}
+{-| -}
 type Origin
     = OriginS3 S3Origin
     | OriginCustom CustomOrigin
     | OriginUnknown
 
 
-{-| TODO
--}
+{-| -}
 type alias Request =
     { clientIp : String
     , headers : Headers
@@ -96,8 +97,7 @@ type alias Request =
     }
 
 
-{-| TODO
--}
+{-| -}
 type alias Response =
     { status : String
     , statusDescription : String
@@ -105,45 +105,46 @@ type alias Response =
     }
 
 
-{-| TODO
--}
+{-| -}
 type alias OriginRequest =
     { config : Config, request : Request }
 
 
-{-| TODO
--}
+{-| -}
 type alias OriginResponse =
     { config : Config, request : Request, response : Response }
 
 
-{-| TODO
--}
+{-| -}
 type InputOrigin
     = InputResponse OriginResponse
     | InputRequest OriginRequest
 
 
-{-| TODO
--}
+{-| -}
 type alias Record =
     { cf : InputOrigin }
 
 
-{-| TODO
--}
+{-| -}
 type alias InputEvent =
     { records : List Record }
 
 
-{-| TODO
--}
+{-| -}
 type OutputEvent
     = OutputResponse Response
     | OutputRequest Request
 
 
-{-| TODO
+{-| Handler for [origin request events](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html#example-origin-request)
+
+    originRequest
+        (\{ request } flags ->
+            { request | uri = "new-uri" }
+                |> toRequest
+        )
+
 -}
 originRequest :
     (OriginRequest -> flags -> OutputEvent)
@@ -164,7 +165,16 @@ originRequest origin flags maybeCloudFront =
             origin defaultOriginRequest flags
 
 
-{-| TODO
+{-| Handler for [origin response events](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html#lambda-event-structure-response-origin)
+
+    originResponse
+        (\{ response, request } _ ->
+            response
+                |> withHeader
+                    { key = "cache-control", value = "public, max-age=31536000" }
+                |> toResponse
+        )
+
 -}
 originResponse :
     (OriginResponse -> flags -> OutputEvent)
@@ -185,14 +195,14 @@ originResponse origin flags maybeCloudFront =
             origin defaultOriginResponse flags
 
 
-{-| TODO
+{-| Map request to output event, to be used with [`originRequest`](#originRequest) or [`originResponse`](#originResponse)
 -}
 toRequest : Request -> OutputEvent
 toRequest request =
     OutputRequest request
 
 
-{-| TODO
+{-| Map response to output event, to be used with [`originResponse`](#originResponse)
 -}
 toResponse : Response -> OutputEvent
 toResponse response =

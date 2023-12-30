@@ -1,11 +1,22 @@
-module CloudFront.Header exposing (Header, Headers, withHeader, withHeaders)
+module CloudFront.Header exposing
+    ( withHeader, withHeaders
+    , Header, Headers
+    )
 
 {-| Handle AWS CloudFront request and response headers.
 
 For more documentation see [working with policies in AWS CloudFront developer guide
 ](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/working-with-policies.html).
 
-@docs Header, Headers, withHeader, withHeaders
+
+## Handlers
+
+@docs withHeader, withHeaders
+
+
+## Types
+
+@docs Header, Headers
 
 -}
 
