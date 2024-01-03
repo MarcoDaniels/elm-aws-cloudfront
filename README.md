@@ -8,23 +8,8 @@ This package uses an [Elm headless worker](https://package.elm-lang.org/packages
 the hood requiring [ports](https://guide.elm-lang.org/interop/ports) and a small JavaScript snippet to be bundled and
 deployed into AWS CloudFront Lambda@Edge.
 
-JavaScript part:
-```javascript
-const {Elm} = require('./elm');
-// optinal flags can be passed on init
-// const app = Elm.MyModule.init({token: 'my-token'});
-const app = Elm.MyModule.init();
-exports.handler = (event, context, callback) => {
-    const caller = (output) => {
-        callback(null, output);
-        app.ports.outputEvent.unsubscribe(caller);
-    }
-    app.ports.outputEvent.subscribe(caller);
-    app.ports.inputEvent.send(event);
-}
-```
-
 Elm part:
+
 ```elm
 port module MyModule exposing (main)
 
@@ -51,4 +36,43 @@ main =
                 )
                 |> cloudFront
            )
+```
+
+JavaScript part:
+
+```javascript
+const {Elm} = require('./elm');
+// optinal flags can be passed on init
+// const app = Elm.MyModule.init({flags: {token: 'my-token'}});
+const app = Elm.MyModule.init();
+exports.handler = (event, context, callback) => {
+    const caller = (output) => {
+        callback(null, output);
+        app.ports.outputEvent.unsubscribe(caller);
+    }
+    app.ports.outputEvent.subscribe(caller);
+    app.ports.inputEvent.send(event);
+}
+```
+
+---
+
+This repository also provides a nix builder to build and bundle the application to be ready to deploy into AWS.
+
+For that the [elm2nix package](https://github.com/cachix/elm2nix) is needed to generate `elm-srcs.nix`
+and `registry.dat` files.
+
+```nix
+makeLambda.buildElmAWSCloudFront {
+  src = ./src;
+  elmSrc = ./elm-srcs.nix;
+  elmRegistryDat = ./registry.dat;
+  lambdas = [
+    { module = "MyModuleTwo"; }
+    {
+      module = "MyModuleOne";
+      flags = [ ''token:"token-goes-here"'' ''url:"url-goes-here"'' ];
+    }
+  ];
+}
 ```
