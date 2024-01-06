@@ -4,7 +4,7 @@
       name = "elm-aws-cloudfront";
       src = src;
       buildInputs =
-        [ pkgs.elmPackages.elm pkgs.nodePackages.uglify-js pkgs.esbuild ];
+        [ pkgs.elmPackages.elm pkgs.esbuild ];
 
       buildPhase = pkgs.elmPackages.fetchElmDeps {
         elmPackages = import elmSrc;

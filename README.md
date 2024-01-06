@@ -55,12 +55,19 @@ exports.handler = (event, context, callback) => {
 }
 ```
 
----
+This repository also provides a nix builder to build and bundle the application to be ready to deploy into AWS. This
+requires to have the Elm ports named with:
 
-This repository also provides a nix builder to build and bundle the application to be ready to deploy into AWS.
+```elm
+port inputEvent : (Decode.Value -> msg) -> Sub msg
 
-For that the [elm2nix package](https://github.com/cachix/elm2nix) is needed to generate `elm-srcs.nix`
-and `registry.dat` files.
+port outputEvent : Encode.Value -> Cmd msg
+```
+
+As the bundled JavasScript will automatically add the input and output ports with the specific name.
+
+The nix builder requires the `elm-srcs.nix` and `registry.dat` files, and for that
+the [elm2nix package](https://github.com/cachix/elm2nix) is needed to generate them.
 
 ```nix
 makeLambda.buildElmAWSCloudFront {
