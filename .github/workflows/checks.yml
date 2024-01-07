@@ -1,14 +1,15 @@
-name: Pull Request
+name: Checks
 
 on:
   pull_request:
-    branches: [ main ]
   push:
     branches: [ main ]
+  release:
+    types: [ published ]
 
 jobs:
-  test:
-    name: test
+  check:
+    name: Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
