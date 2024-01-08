@@ -6,7 +6,7 @@ Create [AWS CloudFront Lambda@Edge](https://docs.aws.amazon.com/lambda/latest/dg
 
 This package uses an [Elm headless worker](https://package.elm-lang.org/packages/elm/core/latest/Platform#worker) under
 the hood requiring [ports](https://guide.elm-lang.org/interop/ports) and a small JavaScript snippet to be bundled and
-deployed into AWS CloudFront Lambda@Edge.
+deployed into AWS CloudFront Lambda@Edge. Check the [examples folder](/examples).
 
 Elm part:
 
@@ -75,9 +75,9 @@ makeLambda.buildElmAWSCloudFront {
   elmSrc = ./elm-srcs.nix;
   elmRegistryDat = ./registry.dat;
   lambdas = [
-    { module = "MyModuleTwo"; }
+    { module = ./src/MyModuleTwo.elm; }
     {
-      module = "MyModuleOne";
+      module = ./src/MyModuleOne.elm;
       flags = [ ''token:"token-goes-here"'' ''url:"url-goes-here"'' ];
     }
   ];
