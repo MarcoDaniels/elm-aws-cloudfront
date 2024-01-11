@@ -3,7 +3,8 @@
     stdenv.mkDerivation {
       name = "elm-aws-cloudfront";
       src = src;
-      buildInputs = [ pkgs.elmPackages.elm pkgs.esbuild ];
+      buildInputs =
+        [ pkgs.elmPackages.elm pkgs.esbuild pkgs.nodePackages.uglify-js ];
 
       buildPhase = pkgs.elmPackages.fetchElmDeps {
         elmPackages = import elmSrc;
@@ -39,12 +40,22 @@
         ${pkgs.elmPackages.elm}/bin/elm make ${lambda.module} --optimize --output $out/elm.tmp.js
 
         echo "bundle ${moduleName lambda.module}"
-        ${pkgs.esbuild}/bin/esbuild --bundle --minify --pure:A2 --pure:A3 --pure:A4 --pure:A5 --pure:A6 --pure:A7 --pure:A8 --pure:A9 --pure:F2 --pure:F3 --pure:F3 --pure:F4 --pure:F5 --pure:F6 --pure:F7 --pure:F8 --pure:F9 --platform=node --outfile=$out/${
+        ${pkgs.esbuild}/bin/esbuild --bundle --minify --platform=node --log-level=silent --outfile=$out/${
           moduleName lambda.module
         }.js $out/${moduleName lambda.module}.tmp.js
 
+        echo "minimize ${moduleName lambda.module}"
+        ${pkgs.nodePackages.uglify-js}/bin/uglifyjs $out/${
+          moduleName lambda.module
+        }.js --compress 'pure_funcs="F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9",pure_getters,keep_fargs=false,unsafe_comps,unsafe'\
+        | ${pkgs.nodePackages.uglify-js}/bin/uglifyjs --mangle --output $out/${
+          moduleName lambda.module
+        }.js
+
         echo "cleanup temporary files"
         rm $out/*.tmp.js
+
+        echo "module output ${moduleName lambda.module}.js"
       '') lambdas)}";
     };
 }
